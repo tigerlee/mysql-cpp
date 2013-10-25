@@ -8,7 +8,7 @@ WARNING_CXXFLAGS = -Wall -Wextra -Weffc++ -Wfloat-equal -Wshadow\
 	-Wpointer-arith -Wcast-align -Wstrict-overflow=5\
 	-Wwrite-strings -Wswitch-default -Wswitch-enum -Wparentheses\
 	-Woverloaded-virtual -Wconversion -pedantic
-CXXFLAGS=-std=$(CXX_STANDARD) $(WARNING_CXXFLAGS) -g --coverage
+CXXFLAGS=-std=$(CXX_STANDARD) $(WARNING_CXXFLAGS) -g #--coverage
 STATICFLAGS=$(CXXFLAGS) -c -fPIC
 SHAREDFLAGS=$(CXXFLAGS) -shared
 
