@@ -67,9 +67,6 @@ class Friend {
 };
 /// @}
 
-static const char NULL_VALUE_ERROR_MESSAGE[] = \
-    "Null value encountered with non-smart-pointer output type";
-
 template<int I> struct int_ {};  // Compile-time counter
 
 template<typename Tuple, int I>
@@ -236,11 +233,9 @@ void OutputBinderResultSetter<T>::setResult(
     T* const value,
     const MYSQL_BIND& bind
 ) {
-    // Null values only be encountered with shared_ptr output variables, and
-    // those are handled in a partial template specialization, so if we see
-    // one here, it's unexpected and an error
+    // Let user take their own risk
     if (*bind.is_null) {
-        throw MySqlException(NULL_VALUE_ERROR_MESSAGE);
+        return;
     }
     *value = boost::lexical_cast<T>(static_cast<char*>(bind.buffer));
 }
@@ -308,7 +303,7 @@ class OutputBinderResultSetter<type> { \
             const MYSQL_BIND& bind \
         ) { \
             if (*bind.is_null) { \
-                throw MySqlException(NULL_VALUE_ERROR_MESSAGE); \
+                return; \
             } \
             *value = *static_cast<const decltype(value)>(bind.buffer); \
         } \
@@ -332,7 +327,7 @@ class OutputBinderResultSetter<std::string> {
             const MYSQL_BIND& bind
         ) {
             if (*bind.is_null) {
-                throw MySqlException(NULL_VALUE_ERROR_MESSAGE);
+                return;
             }
             // bind.buffer may not terminated with '\0', so we should use
             // string::assign() and specify the column length.
